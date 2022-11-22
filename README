@@ -1,0 +1,32 @@
+    Clasa principala este MapReduce, cu rol de coordonare si agregare. Pe langa
+ea, implementarea mai contine 4 clase: Map, MapResult, Reduce si ReduceResult.
+Clasele Map si Reduce implementeaza interfata Callable. Task-urile de tip Map
+sunt adaugate intr-o lista si un Executor Service aloca task-urile unui thread
+pool. Se asteapta terminarea task-urilor de tip Map, ca apoi thread-ul principal
+sa agrege rezultatele intr-un hash table, astfel incat fiecarui document sa-i
+corespunda un task de tip Reduce, iar fiecare task primeste toate rezultatele
+partiale aferente acelui document. Colectia de task-uri de tip Reduce este si ea
+oferita Executor Service-ului, pentru a genera rezultatele finale. Rezultatele
+finale sunt adaugate intr-o lista. Thread-ul principal sorteaza lista
+descrescator dupa rang si scrie in fisier rezultatele, cate unul pe linie.
+
+    In interiorul task-ului Map se verifica daca fragmentul contine un cuvant
+incomplet la inceput, caz in care se cauta primul caracter care nu apartine
+unui cuvant. Mai departe, se cauta litera cu litera cuvinte. La citirea unui
+cuvant, se retine lungimea lui. Daca este un cuvant de lungime maxima, se
+retine si cuvantul. Daca s-au citit deja un numar de octeti egali cu
+dimensiunea fragmentului si cuvantul curent nu s-a terminat, se continua
+citirea pana la terminarea cuvantului.
+
+    In interiorul task-ului Reduce se calculeaza rangul conform metricii
+stabilite. Valorile din sirul lui Fibonacci se calculeaza iterativ.
+
+    Nu sunt necesare alte elemente de sincronizare, pentru ca apelul get() pe
+obiectele de tip Future asteapta finalizarea task-urilor.
+
+    Fisierul de input contine un chunk size pentru task-urile de tip Map, urmat
+de un numar N (numarul de fisiere) si fisierele ce vor fi analizate.
+
+    Fisierul de output contine un rang atribuit fisierului pe baza lungimii
+cuvintelor, lungimea maxima a unui cuvant din fisier si numarul de cuvinte de
+lungime maxima.
